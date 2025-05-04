@@ -4,8 +4,7 @@ const ScoreInput = ({ groupId, onScoreChange }) => {
   return (
     <div style={{ marginBottom: "2rem" }}>
       <h2>{groupId.replace("group", "Group ")} - Score Input</h2>
-      <div style={{ display: "flex", gap: "2px", marginBottom: "5px" }}>
-        <div style={{ width: "150px" }} /> {/* 이름 칸만큼 공간 확보 */}
+      <div style={{ display: "flex", gap: "2px", marginBottom: "5px", marginLeft: "88px" }}>
         {[...Array(18)].map((_, i) => (
           <div key={i} style={{ width: "30px", textAlign: "center", fontWeight: "bold" }}>{i + 1}</div>
         ))}

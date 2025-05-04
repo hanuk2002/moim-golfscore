@@ -1,103 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moim Golfscore</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    .score-row {
-      display: flex;
-      margin-bottom: 5px;
-    }
-    .score-row input {
-      width: 30px;
-      text-align: center;
-      margin-right: 2px;
-    }
-    .hole-numbers {
-      display: flex;
-      justify-content: start;
-      margin-bottom: 5px;
-    }
-    .hole-numbers input {
-      width: 30px;
-      text-align: center;
-      border: none;
-      font-weight: bold;
-      pointer-events: none;
-      background: none;
-    }
-  </style>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <h1>Moim Golfscore</h1>
-  <button onclick="goBack()">Back to Main</button>
-
-  <h2>Group 1 - Score Input</h2>
-  <div class="hole-numbers" id="holeNumbers"></div>
-  <div id="scoreInputs"></div>
-
-  <button onclick="backupJSON()">Backup JSON</button>
-
-  <script>
-    const scoreData = {};
-    const holeNumbersDiv = document.getElementById("holeNumbers");
-    const scoreInputsDiv = document.getElementById("scoreInputs");
-
-    // Render hole numbers
-    for (let i = 1; i <= 18; i++) {
-      const input = document.createElement("input");
-      input.value = i;
-      input.readOnly = true;
-      holeNumbersDiv.appendChild(input);
-    }
-
-    // Render players
-    for (let p = 1; p <= 4; p++) {
-      const row = document.createElement("div");
-      row.className = "score-row";
-
-      const nameInput = document.createElement("input");
-      nameInput.placeholder = `Player ${p} Name`;
-      row.appendChild(nameInput);
-
-      for (let h = 1; h <= 18; h++) {
-        const scoreInput = document.createElement("input");
-        scoreInput.dataset.player = p;
-        scoreInput.dataset.hole = h;
-        scoreInput.addEventListener("input", () => {
-          const playerName = nameInput.value || `Player ${p}`;
-          if (!scoreData[playerName]) scoreData[playerName] = {};
-          scoreData[playerName][`Hole ${h}`] = scoreInput.value;
-        });
-        row.appendChild(scoreInput);
-      }
-
-      scoreInputsDiv.appendChild(row);
-    }
-
-    function backupJSON() {
-      const blob = new Blob([JSON.stringify(scoreData, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "golfscore_backup.json";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function goBack() {
-      alert("Returning to main screen... (Add your routing logic here)");
-    }
-  </script>
+  <div id="root"></div>
+  <script type="module" src="main.jsx"></script>
 </body>
 </html>

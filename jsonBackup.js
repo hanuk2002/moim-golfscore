@@ -1,14 +1,3 @@
-
-export function generateBackupData(scoreData) {
-  try {
-    const jsonString = JSON.stringify(scoreData, null, 2);
-    return jsonString;
-  } catch (error) {
-    console.error("Error generating JSON backup:", error);
-    return null;
-  }
-}
-
 export function downloadJSON(jsonString, filename = "golfscore_backup.json") {
   const blob = new Blob([jsonString], { type: "application/json" });
   const url = URL.createObjectURL(blob);
