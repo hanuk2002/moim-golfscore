@@ -4,34 +4,50 @@ import "./index.css";
 const NUM_HOLES = 18;
 const NUM_PLAYERS = 4;
 
-function ScoreInput({ groupIndex, groupData, updatePlayerName, updateScore }) {
+function ScoreInput({ groupIndex }) {
+  const [players, setPlayers] = useState(Array(NUM_PLAYERS).fill({ name: "", scores: Array(NUM_HOLES).fill("") }));
+
+  const handleInputChange = (playerIdx, holeIdx, value) => {
+    const updatedPlayers = [...players];
+    updatedPlayers[playerIdx] = {
+      ...updatedPlayers[playerIdx],
+      scores: [...updatedPlayers[playerIdx].scores]
+    };
+    updatedPlayers[playerIdx].scores[holeIdx] = value;
+    setPlayers(updatedPlayers);
+  };
+
+  const handleNameChange = (playerIdx, value) => {
+    const updatedPlayers = [...players];
+    updatedPlayers[playerIdx] = {
+      ...updatedPlayers[playerIdx],
+      name: value
+    };
+    setPlayers(updatedPlayers);
+  };
+
   return (
-    <div className="group-container">
+    <div className="group">
       <h2>Group {groupIndex + 1} - Score Input</h2>
       <div className="hole-numbers">
-        <div className="label-cell" />
-        {[...Array(NUM_HOLES)].map((_, holeIdx) => (
+        {Array.from({ length: NUM_HOLES }, (_, holeIdx) => (
           <div className="hole-number" key={holeIdx}>{holeIdx + 1}</div>
         ))}
       </div>
-      {groupData.players.map((player, playerIdx) => (
+      {players.map((player, playerIdx) => (
         <div className="player-row" key={playerIdx}>
           <input
-            className="name-input"
             type="text"
-            placeholder={`Player ${playerIdx + 1} Name`}
             value={player.name}
-            onChange={(e) => updatePlayerName(groupIndex, playerIdx, e.target.value)}
+            onChange={(e) => handleNameChange(playerIdx, e.target.value)}
+            placeholder={\`Player \${playerIdx + 1} Name\`}
           />
-          {[...Array(NUM_HOLES)].map((_, holeIdx) => (
+          {Array.from({ length: NUM_HOLES }, (_, holeIdx) => (
             <input
+              type="text"
               key={holeIdx}
-              type="number"
-              className="score-input"
-              value={player.scores[holeIdx] ?? ""}
-              onChange={(e) =>
-                updateScore(groupIndex, playerIdx, holeIdx, e.target.value)
-              }
+              value={player.scores[holeIdx]}
+              onChange={(e) => handleInputChange(playerIdx, holeIdx, e.target.value)}
             />
           ))}
         </div>
@@ -40,43 +56,46 @@ function ScoreInput({ groupIndex, groupData, updatePlayerName, updateScore }) {
   );
 }
 
-function App() {
-  const [numGroups, setNumGroups] = useState(3);
-  const [scoreData, setScoreData] = useState(
-    Array.from({ length: numGroups }, () => ({
-      players: Array.from({ length: NUM_PLAYERS }, () => ({
-        name: "",
-        scores: Array(NUM_HOLES).fill(""),
-      })),
-    }))
-  );
+export default function App() {
+  const [groupCount, setGroupCount] = useState(1);
 
-  const updatePlayerName = (groupIdx, playerIdx, name) => {
-    const newData = structuredClone(scoreData);
-    newData[groupIdx].players[playerIdx].name = name;
-    setScoreData(newData);
+  const handleGroupSelect = (e) => {
+    setGroupCount(parseInt(e.target.value));
   };
 
-  const updateScore = (groupIdx, playerIdx, holeIdx, value) => {
-    const newData = structuredClone(scoreData);
-    newData[groupIdx].players[playerIdx].scores[holeIdx] = value;
-    setScoreData(newData);
+  const saveScores = () => {
+    const scores = [];
+    for (let g = 0; g < groupCount; g++) {
+      const groupEl = document.querySelectorAll(".group")[g];
+      const playerRows = groupEl.querySelectorAll(".player-row");
+      const groupData = [];
+      playerRows.forEach((row) => {
+        const inputs = row.querySelectorAll("input");
+        const name = inputs[0].value;
+        const scores = Array.from(inputs).slice(1).map((input) => input.value);
+        groupData.push({ name, scores });
+      });
+      scores.push({ group: g + 1, players: groupData });
+    }
+    localStorage.setItem("golfScores", JSON.stringify(scores));
+    alert("스코어가 저장되었습니다!");
   };
 
   return (
-    <div className="app-container">
+    <div>
       <h1>Moim Golfscore</h1>
-      {scoreData.map((group, idx) => (
-        <ScoreInput
-          key={idx}
-          groupIndex={idx}
-          groupData={group}
-          updatePlayerName={updatePlayerName}
-          updateScore={updateScore}
-        />
+      <div>
+        <label>Select Number of Groups: </label>
+        <select onChange={handleGroupSelect} value={groupCount}>
+          {Array.from({ length: 10 }, (_, i) => (
+            <option key={i} value={i + 1}>{i + 1}</option>
+          ))}
+        </select>
+      </div>
+      {Array.from({ length: groupCount }, (_, groupIdx) => (
+        <ScoreInput key={groupIdx} groupIndex={groupIdx} />
       ))}
+      <button onClick={saveScores}>Save Scores</button>
     </div>
   );
 }
-
-export default App;

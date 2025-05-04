@@ -1,46 +1,37 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
   padding: 20px;
-  background: #fff;
-  color: #000;
 }
 
-.app-container {
-  max-width: 1000px;
-  margin: auto;
-}
-
-.group-container {
+.group {
   margin-bottom: 40px;
 }
 
 .player-row {
   display: flex;
-  align-items: center;
-  margin-bottom: 8px;
+  gap: 4px;
+  margin-bottom: 6px;
 }
 
-.name-input {
-  width: 150px;
-  margin-right: 8px;
-}
-
-.score-input {
-  width: 30px;
-  margin-right: 2px;
+.player-row input[type="text"] {
+  width: 40px;
   text-align: center;
+}
+
+.player-row input:first-child {
+  width: 150px;
+  text-align: left;
 }
 
 .hole-numbers {
   display: flex;
-  align-items: center;
+  gap: 4px;
   margin-bottom: 6px;
-  margin-left: 150px;
+  margin-left: 154px;
 }
 
 .hole-number {
-  width: 30px;
+  width: 40px;
   text-align: center;
   font-weight: bold;
-  margin-right: 2px;
 }
