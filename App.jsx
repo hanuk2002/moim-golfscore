@@ -1,108 +1,35 @@
 import React, { useState } from "react";
-import { generateBackupData, downloadJSON } from "./jsonBackup";
-import "./index.css";
+import ScoreInput from "./ScoreInput";
+import { downloadJSON } from "./jsonBackup";
 
-const NUM_HOLES = 18;
-const NUM_PLAYERS = 4;
+function App() {
+  const [groupCount, setGroupCount] = useState(3);
+  const [scores, setScores] = useState({});
 
-function ScoreInput({ groupIndex }) {
-  const [players, setPlayers] = useState(Array(NUM_PLAYERS).fill({ name: "", scores: Array(NUM_HOLES).fill("") }));
-
-  const handleInputChange = (playerIdx, holeIdx, value) => {
-    const updatedPlayers = [...players];
-    updatedPlayers[playerIdx] = {
-      ...updatedPlayers[playerIdx],
-      scores: [...updatedPlayers[playerIdx].scores]
-    };
-    updatedPlayers[playerIdx].scores[holeIdx] = value;
-    setPlayers(updatedPlayers);
-  };
-
-  const handleNameChange = (playerIdx, value) => {
-    const updatedPlayers = [...players];
-    updatedPlayers[playerIdx] = {
-      ...updatedPlayers[playerIdx],
-      name: value
-    };
-    setPlayers(updatedPlayers);
-  };
-
-  return (
-    <div className="group">
-      <h2>Group {groupIndex + 1} - Score Input</h2>
-      <div className="hole-numbers">
-        {Array.from({ length: NUM_HOLES }, (_, holeIdx) => (
-          <div className="hole-number" key={holeIdx}>{holeIdx + 1}</div>
-        ))}
-      </div>
-      {players.map((player, playerIdx) => (
-        <div className="player-row" key={playerIdx}>
-          <input
-            type="text"
-            value={player.name}
-            onChange={(e) => handleNameChange(playerIdx, e.target.value)}
-            placeholder={\`Player \${playerIdx + 1} Name\`}
-          />
-          {Array.from({ length: NUM_HOLES }, (_, holeIdx) => (
-            <input
-              type="text"
-              key={holeIdx}
-              value={player.scores[holeIdx]}
-              onChange={(e) => handleInputChange(playerIdx, holeIdx, e.target.value)}
-            />
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export default function App() {
-  const [groupCount, setGroupCount] = useState(1);
-  const [scoreData, setScoreData] = useState([]);
-
-  const handleGroupSelect = (e) => {
-    setGroupCount(parseInt(e.target.value));
-  };
-
-  const saveScores = () => {
-    const scores = [];
-    document.querySelectorAll(".group").forEach((groupEl, gIdx) => {
-      const groupData = [];
-      groupEl.querySelectorAll(".player-row").forEach((row) => {
-        const inputs = row.querySelectorAll("input");
-        const name = inputs[0].value;
-        const scores = Array.from(inputs).slice(1).map((i) => i.value);
-        groupData.push({ name, scores });
-      });
-      scores.push({ group: gIdx + 1, players: groupData });
+  const handleScoreChange = (groupId, playerId, holeIndex, value) => {
+    setScores((prev) => {
+      const updated = { ...prev };
+      if (!updated[groupId]) updated[groupId] = {};
+      if (!updated[groupId][playerId]) updated[groupId][playerId] = Array(18).fill("");
+      updated[groupId][playerId][holeIndex] = value;
+      return updated;
     });
-    setScoreData(scores);
-    localStorage.setItem("golfScores", JSON.stringify(scores));
-    alert("스코어가 저장되었습니다!");
   };
 
-  const backupJSON = () => {
-    const backup = generateBackupData(scoreData);
-    if (backup) downloadJSON(backup);
+  const handleBackup = () => {
+    localStorage.setItem("golfScores", JSON.stringify(scores));
+    downloadJSON(JSON.stringify(scores, null, 2));
   };
 
   return (
     <div>
       <h1>Moim Golfscore</h1>
-      <div>
-        <label>Select Number of Groups: </label>
-        <select onChange={handleGroupSelect} value={groupCount}>
-          {Array.from({ length: 10 }, (_, i) => (
-            <option key={i} value={i + 1}>{i + 1}</option>
-          ))}
-        </select>
-      </div>
-      {Array.from({ length: groupCount }, (_, groupIdx) => (
-        <ScoreInput key={groupIdx} groupIndex={groupIdx} />
+      {[...Array(groupCount)].map((_, i) => (
+        <ScoreInput key={i} groupId={`group${i + 1}`} onScoreChange={handleScoreChange} />
       ))}
-      <button onClick={saveScores}>Save Scores</button>
-      <button onClick={backupJSON}>Backup JSON</button>
+      <button onClick={handleBackup}>백업(JSON 저장)</button>
     </div>
   );
 }
+
+export default App;

@@ -1,32 +1,20 @@
-import React from 'react';
+import React from "react";
 
-const ScoreInput = ({ groupNumber }) => {
-  const players = ['Player 1', 'Player 2', 'Player 3', 'Player 4'];
-
+const ScoreInput = ({ groupId, onScoreChange }) => {
   return (
-    <div className="group-container">
-      <h2>Group {groupNumber} - Score Input</h2>
-
-      {/* 홀 번호 라벨 */}
-      <div className="hole-label-row">
-        <div className="empty-name-cell" />
-        {[...Array(18)].map((_, holeIdx) => (
-          <div key={holeIdx} className="hole-number">{holeIdx + 1}</div>
+    <div style={{ marginBottom: "2rem" }}>
+      <h2>{groupId.replace("group", "Group ")} - Score Input</h2>
+      <div style={{ display: "flex", gap: "2px", marginBottom: "5px", marginLeft: "88px" }}>
+        {[...Array(18)].map((_, i) => (
+          <div key={i} style={{ width: "30px", textAlign: "center", fontWeight: "bold" }}>{i + 1}</div>
         ))}
       </div>
-
-      {/* 4명의 플레이어 입력 필드 */}
-      {players.map((label, pIdx) => (
-        <div key={pIdx} className="player-row">
-          <input className="player-name" placeholder={`${label} Name`} />
-          {[...Array(18)].map((_, hIdx) => (
-            <input
-              key={hIdx}
-              className="score-input"
-              type="number"
-              min="-9"
-              max="99"
-            />
+      {[...Array(4)].map((_, playerIndex) => (
+        <div key={playerIndex} style={{ marginBottom: "6px", display: "flex", gap: "2px" }}>
+          <input placeholder={`Player ${playerIndex + 1} Name`} style={{ width: "150px" }} />
+          {[...Array(18)].map((_, holeIndex) => (
+            <input key={holeIndex} style={{ width: "30px", textAlign: "center" }}
+              onChange={(e) => onScoreChange(groupId, `player${playerIndex + 1}`, holeIndex, e.target.value)} />
           ))}
         </div>
       ))}

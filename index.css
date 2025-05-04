@@ -1,37 +1,15 @@
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 2rem;
 }
-
-.group {
-  margin-bottom: 40px;
+input {
+  padding: 3px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
-
-.player-row {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
-}
-
-.player-row input[type="text"] {
-  width: 40px;
-  text-align: center;
-}
-
-.player-row input:first-child {
-  width: 150px;
-  text-align: left;
-}
-
-.hole-numbers {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
-  margin-left: 154px;
-}
-
-.hole-number {
-  width: 40px;
-  text-align: center;
-  font-weight: bold;
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
