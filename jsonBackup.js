@@ -19,3 +19,14 @@ export function downloadJSON(jsonString, filename = "golfscore_backup.json") {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+window.backup = function () {
+  const scoreData = [];
+  document.querySelectorAll(".score-inputs").forEach(row => {
+    const name = row.querySelector(".name-input").value;
+    const scores = Array.from(row.querySelectorAll("input[type='number']")).map(input => input.value);
+    scoreData.push({ name, scores });
+  });
+  const jsonString = generateBackupData(scoreData);
+  if (jsonString) downloadJSON(jsonString);
+}
