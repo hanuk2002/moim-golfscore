@@ -1,93 +1,86 @@
-import React, { useState } from 'react';
-import './index.css';
-import { generateBackupData, downloadJSON } from './jsonBackup';
+import React, { useState } from "react";
+import { generateBackupData, downloadJSON } from "./jsonBackup";
 
-const GolfScoreInput = ({ groupNumber }) => {
-  const [scores, setScores] = useState(Array(4).fill().map(() => Array(18).fill('')));
-  const [names, setNames] = useState(Array(4).fill(''));
+const App = () => {
+  const [view, setView] = useState("main");
+  const [groupCount, setGroupCount] = useState(1);
+  const [scores, setScores] = useState({});
 
-  const handleScoreChange = (playerIdx, holeIdx, value) => {
-    const updatedScores = [...scores];
-    updatedScores[playerIdx][holeIdx] = value;
-    setScores(updatedScores);
-  };
-
-  const handleNameChange = (playerIdx, value) => {
-    const updatedNames = [...names];
-    updatedNames[playerIdx] = value;
-    setNames(updatedNames);
+  const handleInputChange = (group, player, hole, value) => {
+    setScores(prev => {
+      const updated = { ...prev };
+      if (!updated[group]) updated[group] = {};
+      if (!updated[group][player]) updated[group][player] = {};
+      updated[group][player][hole] = value;
+      return updated;
+    });
   };
 
   const handleBackup = () => {
-    const backupData = {
-      group: groupNumber,
-      players: names.map((name, i) => ({ name, scores: scores[i] })),
-    };
-    const jsonString = generateBackupData(backupData);
-    if (jsonString) downloadJSON(jsonString, `group${groupNumber}_golfscore_backup.json`);
+    const json = generateBackupData(scores);
+    if (json) downloadJSON(json);
   };
 
-  return (
-    <div>
-      <h2>Group {groupNumber} - Score Input</h2>
-      <div className="hole-numbers">
-        <span className="name-cell"></span>
-        {Array.from({ length: 18 }, (_, i) => (
-          <span key={i} className={`hole-label ${i === 0 ? 'first-hole' : ''}`}>{i + 1}</span>
-        ))}
-      </div>
-      {scores.map((scoreRow, playerIdx) => (
-        <div key={playerIdx} className="player-row">
-          <input
-            type="text"
-            value={names[playerIdx]}
-            onChange={(e) => handleNameChange(playerIdx, e.target.value)}
-            placeholder={`Player ${playerIdx + 1} Name`}
-            className="name-input"
-          />
-          {scoreRow.map((score, holeIdx) => (
-            <input
-              key={holeIdx}
-              type="text"
-              value={score}
-              onChange={(e) => handleScoreChange(playerIdx, holeIdx, e.target.value)}
-              className="score-input"
-            />
-          ))}
-        </div>
-      ))}
-      <button onClick={handleBackup}>Backup JSON</button>
-    </div>
-  );
-};
-
-const App = () => {
-  const [groupCount, setGroupCount] = useState(0);
-  const [start, setStart] = useState(false);
-
-  return (
-    <div>
-      <h1>Moim Golfscore</h1>
-      {!start ? (
-        <div>
-          <label>Select number of groups (1-10): </label>
+  if (view === "main") {
+    return (
+      <div>
+        <h1>Moim Golfscore</h1>
+        <label>
+          Select Number of Groups (1–10):{" "}
           <input
             type="number"
             min="1"
             max="10"
             value={groupCount}
-            onChange={(e) => setGroupCount(Number(e.target.value))}
+            onChange={e => setGroupCount(parseInt(e.target.value))}
           />
-          <button onClick={() => setStart(true)}>Start Scoring</button>
+        </label>
+        <br />
+        <button onClick={() => setView("score")}>Start Scoring</button>
+      </div>
+    );
+  }
+
+  const holeHeader = (
+    <div style={{ display: "flex", marginLeft: "160px", gap: "4px" }}>
+      {[...Array(18)].map((_, i) => (
+        <div key={i} style={{ width: "40px", textAlign: "center", fontWeight: "bold" }}>
+          {i + 1}
         </div>
-      ) : (
-        <div>
-          <button onClick={() => setStart(false)}>Back to Main</button>
-          {Array.from({ length: groupCount }, (_, i) => (
-            <GolfScoreInput key={i} groupNumber={i + 1} />
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      <h1>Moim Golfscore</h1>
+      <button onClick={() => setView("main")}>Back to Main</button>
+      {[...Array(groupCount)].map((_, gIdx) => (
+        <div key={gIdx}>
+          <h2>Group {gIdx + 1} - Score Input</h2>
+          {holeHeader}
+          {[...Array(4)].map((_, pIdx) => (
+            <div key={pIdx} style={{ display: "flex", gap: "4px", marginBottom: "4px" }}>
+              <input
+                type="text"
+                placeholder={`Player ${pIdx + 1} Name`}
+                style={{ width: "150px" }}
+              />
+              {[...Array(18)].map((_, hIdx) => (
+                <input
+                  key={hIdx}
+                  type="text"
+                  style={{ width: "40px" }}
+                  onChange={e =>
+                    handleInputChange(gIdx + 1, pIdx + 1, hIdx + 1, e.target.value)
+                  }
+                />
+              ))}
+            </div>
           ))}
         </div>
-      )}
+      ))}
+      <button onClick={handleBackup}>Backup JSON</button>
     </div>
   );
 };

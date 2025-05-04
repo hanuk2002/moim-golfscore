@@ -1,4 +1,3 @@
-
 export function generateBackupData(scoreData) {
   try {
     const jsonString = JSON.stringify(scoreData, null, 2);
