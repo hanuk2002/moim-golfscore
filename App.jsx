@@ -1,60 +1,30 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import './index.css';
+import ScoreInput from './ScoreInput';
 
-function PlayerInput({ playerIndex }) {
-  const [scores, setScores] = useState(Array(18).fill(""));
+function App() {
+  const [groupCount, setGroupCount] = useState(null);
 
-  const handleScoreChange = (index, value) => {
-    const updated = [...scores];
-    updated[index] = value;
-    setScores(updated);
+  const handleStart = (count) => {
+    setGroupCount(count);
   };
 
   return (
-    <div style={{ marginBottom: "2rem" }}>
-      <input placeholder={`Player ${playerIndex + 1} Name`} />
-      <div style={{ display: "flex", marginTop: "0.5rem" }}>
-        {scores.map((_, i) => (
-          <div
-            key={`label-${i}`}
-            style={{ width: "30px", textAlign: "center", fontWeight: "bold" }}
-          >
-            {i + 1}
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: "2px" }}>
-        {scores.map((score, i) => (
-          <input
-            key={i}
-            type="text"
-            value={score}
-            onChange={(e) => handleScoreChange(i, e.target.value)}
-            style={{ width: "30px" }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function App() {
-  const [started, setStarted] = useState(false);
-
-  return (
-    <div>
+    <div className="app-container">
       <h1>Moim Golfscore</h1>
-      {!started ? (
-        <>
-          <p>This is the beginning of something fun!</p>
-          <button onClick={() => setStarted(true)}>Start Scoring</button>
-        </>
-      ) : (
+      {!groupCount ? (
         <div>
-          <h2>Group 1 - Score Input</h2>
-          {[...Array(4)].map((_, i) => (
-            <PlayerInput key={i} playerIndex={i} />
+          <p>Select number of groups:</p>
+          {[...Array(10)].map((_, i) => (
+            <button key={i} onClick={() => handleStart(i + 1)}>
+              {i + 1}
+            </button>
           ))}
         </div>
+      ) : (
+        [...Array(groupCount)].map((_, i) => (
+          <ScoreInput key={i} groupNumber={i + 1} />
+        ))
       )}
     </div>
   );
