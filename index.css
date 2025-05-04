@@ -1,15 +1,31 @@
 body {
-  font-family: Arial, sans-serif;
-  padding: 2rem;
+  font-family: sans-serif;
+  padding: 1rem;
 }
-input {
-  padding: 3px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.player-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+.score-input {
+  width: 32px;
+  margin: 2px;
+  text-align: center;
+}
+.name-input {
+  width: 130px;
+  margin-right: 8px;
+}
+.hole-numbers {
+  display: flex;
+  font-weight: bold;
+  margin-left: 130px;
+}
+.hole-label {
+  width: 32px;
+  text-align: center;
+  margin: 2px;
+}
+.first-hole {
+  margin-left: 0;
 }
