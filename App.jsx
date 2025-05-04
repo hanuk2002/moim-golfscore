@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { generateBackupData, downloadJSON } from "./jsonBackup";
 import "./index.css";
 
 const NUM_HOLES = 18;
@@ -58,6 +59,7 @@ function ScoreInput({ groupIndex }) {
 
 export default function App() {
   const [groupCount, setGroupCount] = useState(1);
+  const [scoreData, setScoreData] = useState([]);
 
   const handleGroupSelect = (e) => {
     setGroupCount(parseInt(e.target.value));
@@ -65,20 +67,24 @@ export default function App() {
 
   const saveScores = () => {
     const scores = [];
-    for (let g = 0; g < groupCount; g++) {
-      const groupEl = document.querySelectorAll(".group")[g];
-      const playerRows = groupEl.querySelectorAll(".player-row");
+    document.querySelectorAll(".group").forEach((groupEl, gIdx) => {
       const groupData = [];
-      playerRows.forEach((row) => {
+      groupEl.querySelectorAll(".player-row").forEach((row) => {
         const inputs = row.querySelectorAll("input");
         const name = inputs[0].value;
-        const scores = Array.from(inputs).slice(1).map((input) => input.value);
+        const scores = Array.from(inputs).slice(1).map((i) => i.value);
         groupData.push({ name, scores });
       });
-      scores.push({ group: g + 1, players: groupData });
-    }
+      scores.push({ group: gIdx + 1, players: groupData });
+    });
+    setScoreData(scores);
     localStorage.setItem("golfScores", JSON.stringify(scores));
     alert("스코어가 저장되었습니다!");
+  };
+
+  const backupJSON = () => {
+    const backup = generateBackupData(scoreData);
+    if (backup) downloadJSON(backup);
   };
 
   return (
@@ -96,6 +102,7 @@ export default function App() {
         <ScoreInput key={groupIdx} groupIndex={groupIdx} />
       ))}
       <button onClick={saveScores}>Save Scores</button>
+      <button onClick={backupJSON}>Backup JSON</button>
     </div>
   );
 }
