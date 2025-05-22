@@ -3,25 +3,26 @@ body {
   font-family: Arial, sans-serif;
   padding: 20px;
 }
-.group {
-  margin-top: 40px;
-}
-.score-header, .player-row {
+.score-row {
   display: flex;
-  align-items: center;
   margin-bottom: 5px;
 }
-.score-header div,
-.player-row input,
-.player-row .name-input {
+.score-row input {
   width: 30px;
   text-align: center;
   margin-right: 2px;
 }
-.player-row .name-input {
-  width: 100px;
-  text-align: left;
+.hole-numbers {
+  display: flex;
+  justify-content: start;
+  margin-left: 130px;
+  margin-bottom: 5px;
 }
-button {
-  margin-top: 20px;
+.hole-numbers input {
+  width: 30px;
+  text-align: center;
+  border: none;
+  font-weight: bold;
+  pointer-events: none;
+  background: none;
 }

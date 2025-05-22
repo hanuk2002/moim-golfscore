@@ -2,11 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Moim Golfscore</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="root"></div>
-  <script type="module" src="/main.jsx"></script>
+  <h1>Moim Golfscore</h1>
+  <button onclick="goBack()">Back to Main</button>
+
+  <h2>Group 1 - Score Input</h2>
+  <div class="hole-numbers" id="holeNumbers"></div>
+  <div id="scoreInputs"></div>
+
+  <button onclick="backupJSON()">Backup JSON</button>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>
